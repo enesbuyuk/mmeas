@@ -34,5 +34,9 @@ void Engine::make_instance(){
 }
 
 Engine::~Engine(){
+    std::cout << "destroying graphics engine" << std::endl;
+
+    instance.destroy();
+
     glfwTerminate();
 }
