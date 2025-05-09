@@ -16,7 +16,7 @@ namespace vkInit {
     vk::DebugUtilsMessengerEXT make_debug_messenger(vk::Instance& instance, vk::detail::DispatchLoaderDynamic& dldi){
         vk::DebugUtilsMessengerCreateInfoEXT createInfo = vk::DebugUtilsMessengerCreateInfoEXT(
                 vk::DebugUtilsMessengerCreateFlagsEXT(),
-                vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
+                // vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
                 vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
                 vk::DebugUtilsMessageSeverityFlagBitsEXT::eError,
                 vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
