@@ -2,7 +2,9 @@
 #include "instance.h"
 #include "logging.h"
 
-Engine::Engine() {
+Engine::Engine(bool debug) {
+    debugMode = debug;
+
     if (debugMode) std::cout << "making a graphics engine" << std::endl;
 
     build_glfw_window();

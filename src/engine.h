@@ -8,7 +8,7 @@ class Instance;
 
 class Engine{
 public:
-    Engine();
+    Engine(bool debug);
     ~Engine();
 private:
     bool debugMode = true;
