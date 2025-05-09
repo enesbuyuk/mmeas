@@ -20,6 +20,7 @@ namespace vkInit{
                 if (strcmp(extensionName, supportedExtension.extensionName) == 0 ){
                     notFoundExtensions.push_back(extensionName);
                     extensionFound = true;
+                    if (debug) std::cout << "extension " << extensionName << " is supported" << "\n";
                 }
             }
         }
@@ -41,6 +42,7 @@ namespace vkInit{
                 if (strcmp(layerName, supportedLayer.layerName) == 0 ){
                     notFoundLayers.push_back(layerName);
                     layerFound = true;
+                    if (debug) std::cout << "layer " << layerName << " is supported" << "\n";
                 }
             }
         }
@@ -92,7 +94,9 @@ namespace vkInit{
         const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
         std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
+        if (debug) {
+            extensions.push_back("VK_EXT_debug_utils");
+        }
 
         /*
          *

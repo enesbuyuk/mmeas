@@ -16,11 +16,22 @@ private:
     int width{800}, height{600};
     GLFWwindow* window{nullptr};
 
-    void build_glfw_window();
 
     //vulkan instance
     vk::Instance instance{nullptr};
 
+    // debug callback
+    vk::DebugUtilsMessengerEXT debugMessenger{nullptr};
+
+    // dynamic instance dispatcher
+    vk::detail::DispatchLoaderDynamic dldi;
+
+    void build_glfw_window();
+
+
     void make_instance();
+
+    // debug messenger
+    void make_debug_messenger();
 
 };

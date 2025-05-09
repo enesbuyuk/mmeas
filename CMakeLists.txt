@@ -19,6 +19,7 @@ add_executable(mmeas src/main.cpp
         src/engine.h
         src/engine.h
         src/instance.h
-        src/config.h)
+        src/config.h
+        src/logging.h)
 
 target_link_libraries(mmeas glfw ${Vulkan_LIBRARIES})
