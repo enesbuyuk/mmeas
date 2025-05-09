@@ -1,17 +1,14 @@
 #include "engine.h"
 #include "instance.h"
 #include "logging.h"
+#include "device.h"
 
 Engine::Engine(bool debug) {
     debugMode = debug;
-
     if (debugMode) std::cout << "making a graphics engine" << std::endl;
-
     build_glfw_window();
-
     make_instance();
-
-    make_debug_messenger();
+    make_device();
 }
 
 void Engine::build_glfw_window() {
@@ -32,15 +29,15 @@ void Engine::build_glfw_window() {
 void Engine::make_instance(){
     instance = vkInit::make_instance(debugMode, "MMEAS");
     dldi = vk::detail::DispatchLoaderDynamic(instance, vkGetInstanceProcAddr);
+    if (debugMode) debugMessenger = vkInit::make_debug_messenger(instance, dldi);
 }
 
-void Engine::make_debug_messenger(){
-    debugMessenger = vkInit::make_debug_messenger(instance, dldi);
+void Engine::make_device(){
+    physicalDevice = vkInit::choose_physical_device(instance, debugMode);
 }
 
 Engine::~Engine(){
     std::cout << "destroying graphics engine" << std::endl;
-
     instance.destroyDebugUtilsMessengerEXT(debugMessenger, nullptr, dldi);
 
     instance.destroy();

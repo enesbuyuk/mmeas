@@ -26,12 +26,13 @@ private:
     // dynamic instance dispatcher
     vk::detail::DispatchLoaderDynamic dldi;
 
-    void build_glfw_window();
+    vk::PhysicalDevice physicalDevice{nullptr};
 
+
+    void build_glfw_window();
 
     void make_instance();
 
-    // debug messenger
-    void make_debug_messenger();
 
+    void make_device();
 };
