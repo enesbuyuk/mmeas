@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    Engine* graphicsEngine = new Engine(de  bugMode);
+    Engine* graphicsEngine = new Engine(debugMode);
 
     delete graphicsEngine;
 
