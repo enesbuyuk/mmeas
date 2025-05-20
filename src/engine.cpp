@@ -30,15 +30,35 @@ void Engine::make_instance(){
     instance = vkInit::make_instance(debugMode, "MMEAS");
     dldi = vk::detail::DispatchLoaderDynamic(instance, vkGetInstanceProcAddr);
     if (debugMode) debugMessenger = vkInit::make_debug_messenger(instance, dldi);
+    VkSurfaceKHR c_style_surface;
+    if (glfwCreateWindowSurface(instance, window, nullptr, &c_style_surface) != VK_SUCCESS){
+        if (debugMode) std::cerr << "failed to abstract the glfw surface for vulkan\n";
+    } else {
+        if (debugMode) std::cout << "Successfully abstracted the glfw surface for vulkan.\n";
+    }
+    surface = c_style_surface;
 }
 
 void Engine::make_device(){
     physicalDevice = vkInit::choose_physical_device(instance, debugMode);
+    device = vkInit::create_logical_device(physicalDevice, surface, debugMode);
+    std::array<vk::Queue,2> queues = vkInit::get_queue(physicalDevice, device, surface, debugMode);
+    graphicsQueue = queues[0];
+    presentQueue = queues[1];
+
+    //vkInit::findQueueFamilies(physicalDevice, debugMode);
 }
 
 Engine::~Engine(){
+    if (debugMode)
     std::cout << "destroying graphics engine" << std::endl;
-    instance.destroyDebugUtilsMessengerEXT(debugMessenger, nullptr, dldi);
+
+    device.destroy();
+
+    instance.destroySurfaceKHR(surface);
+    if (debugMode){
+        instance.destroyDebugUtilsMessengerEXT(debugMessenger, nullptr, dldi);
+    }
 
     instance.destroy();
 

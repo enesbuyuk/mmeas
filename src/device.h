@@ -2,6 +2,14 @@
 #include "config.h"
 
 namespace vkInit {
+
+    struct QueueFamilyIndices{
+        std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
+
+        bool isComplete() {return graphicsFamily.has_value() && presentFamily.has_value();}
+    };
+
     void log_device_properties(const vk::PhysicalDevice& device){
         vk::PhysicalDeviceProperties properties = device.getProperties();
         std::cout << "device name: " << properties.deviceName << "\n";
@@ -74,5 +82,81 @@ namespace vkInit {
         }
 
         return nullptr;
+    }
+
+    QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, vk::SurfaceKHR surface, bool debug){
+        QueueFamilyIndices indices;
+
+        std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
+
+        if(debug) std::cout << "system can support " << queueFamilies.size() << " queue families.\n";
+
+        int i = 0;
+
+        for(const auto& queueFamily : queueFamilies){
+            if (queueFamily.queueFlags & vk::QueueFlagBits::eGraphics){
+                indices.graphicsFamily = i;
+                indices.presentFamily = i;
+
+                if (debug) std::cout << "queue family " << i << " is suitable for graphics and presenting." << "\n";
+            }
+
+            if(device.getSurfaceSupportKHR(i, surface)){
+                indices.presentFamily = i;
+                if (debug) std::cout << "queue family " << i << " is suitable for presenting.\n";
+            }
+
+            if(indices.isComplete()) break;
+            i++;
+        }
+
+        return indices;
+    }
+
+    vk::Device create_logical_device(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, bool debug){
+        QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface, debug);
+        std::vector<uint32_t> uniqueIndices = {indices.graphicsFamily.value()};
+        if (indices.graphicsFamily.value() != indices.presentFamily.value()){
+            uniqueIndices.push_back(indices.presentFamily.value());
+        }
+        float queuePriority = 1.0f;
+        std::vector<vk::DeviceQueueCreateInfo> queueCreateInfo;
+        for(const auto& queueFamilyIndex : uniqueIndices){
+            queueCreateInfo.emplace_back(vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority);
+        }
+
+        vk::PhysicalDeviceFeatures deviceFeatures = vk::PhysicalDeviceFeatures();
+        //deviceFeatures.samplerAnisotropy = true;
+
+        std::vector <const char *> enabledLayers;
+        if (debug) enabledLayers.push_back("VK_LAYER_KHRONOS_validation");
+
+
+        vk::DeviceCreateInfo deviceInfo = vk::DeviceCreateInfo(
+                vk::DeviceCreateFlags(),
+                queueCreateInfo.size() , queueCreateInfo.data(),
+                enabledLayers.size(), enabledLayers.data(),
+                0, nullptr,
+                &deviceFeatures
+                );
+        try{
+            vk::Device device = physicalDevice.createDevice(deviceInfo);
+            if (debug) std::cout << "gpu has been successfully abstracted" << "\n";
+            return device;
+        }catch(vk::SystemError err){
+            if (debug) std::cerr << "failed to create logical device: " << err.what() << "\n";
+            return nullptr;
+        }
+        return nullptr;
+    }
+
+    std::array<vk::Queue,2> get_queue(vk::PhysicalDevice physicalDevice, vk::Device device, vk::SurfaceKHR surface, bool debug){
+        QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface, debug);
+
+        return { {
+                device.getQueue(indices.graphicsFamily.value(), 0),
+                device.getQueue(indices.presentFamily.value(), 0)
+        }
+        };
     }
 }

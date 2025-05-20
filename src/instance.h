@@ -15,7 +15,7 @@ namespace vkInit{
         bool extensionFound = false;
         std::vector<const char*> notFoundExtensions;
 
-        for (const char* extensionName : extensions){
+        for (const auto& extensionName : extensions){
             for (vk::ExtensionProperties supportedExtension : supportedExtensions ){
                 if (strcmp(extensionName, supportedExtension.extensionName) == 0 ){
                     notFoundExtensions.push_back(extensionName);
@@ -37,7 +37,7 @@ namespace vkInit{
         bool layerFound = false;
         std::vector<const char*> notFoundLayers;
 
-        for (const char* layerName : layers){
+        for (const auto& layerName : layers){
             for (vk::LayerProperties supportedLayer : supportedLayers ){
                 if (strcmp(layerName, supportedLayer.layerName) == 0 ){
                     notFoundLayers.push_back(layerName);
@@ -49,14 +49,14 @@ namespace vkInit{
 
         if (!extensionFound){
             if (debug) std::cerr << "failed to find required extensions" << std::endl;
-            for (const char* ext : notFoundExtensions){
+            for (const auto& ext : notFoundExtensions){
                 std::cerr << "\t\"" << ext << "\"\n";
             }
         }
 
         if (!layerFound){
             if (debug) std::cerr << "failed to find required layers" << std::endl;
-            for (const char* layer : layers){
+            for (const auto& layer : layers){
                 std::cerr << "\t\"" << layer << "\"\n";
             }
         }
@@ -104,7 +104,7 @@ namespace vkInit{
          */
         if (debug){
             std::cout << "glfw extensions: " << std::endl;
-            for (const char* extName : extensions) std::cout << "\t\"" << extName << "\"\n" ;
+            for (const auto& extName : extensions) std::cout << "\t\"" << extName << "\"\n" ;
         }
 
         std::vector<const char*> layers;

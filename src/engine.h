@@ -17,17 +17,17 @@ private:
     GLFWwindow* window{nullptr};
 
 
-    //vulkan instance
+    // instance-related
     vk::Instance instance{nullptr};
-
-    // debug callback
     vk::DebugUtilsMessengerEXT debugMessenger{nullptr};
-
-    // dynamic instance dispatcher
     vk::detail::DispatchLoaderDynamic dldi;
+    vk::SurfaceKHR surface;
 
+    // device
     vk::PhysicalDevice physicalDevice{nullptr};
-
+    vk::Device device{nullptr};
+    vk::Queue graphicsQueue{nullptr};
+    vk::Queue presentQueue{nullptr};
 
     void build_glfw_window();
 
