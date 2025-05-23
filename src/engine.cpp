@@ -45,14 +45,18 @@ void Engine::make_device(){
     std::array<vk::Queue,2> queues = vkInit::get_queue(physicalDevice, device, surface, debugMode);
     graphicsQueue = queues[0];
     presentQueue = queues[1];
-
-    //vkInit::findQueueFamilies(physicalDevice, debugMode);
+    vkInit::SwapChainBundle bundle = vkInit::create_swapchain(device, physicalDevice, surface, width, height, debugMode);
+    swapchain = bundle.swapchain;
+    swapchainImages = bundle.images;
+    swapchainFormat = bundle.format;
+    swapchainExtent = bundle.extent;
 }
 
 Engine::~Engine(){
     if (debugMode)
     std::cout << "destroying graphics engine" << std::endl;
 
+    device.destroySwapchainKHR(swapchain);
     device.destroy();
 
     instance.destroySurfaceKHR(surface);
