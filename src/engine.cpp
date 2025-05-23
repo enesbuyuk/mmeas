@@ -2,6 +2,7 @@
 #include "instance.h"
 #include "logging.h"
 #include "device.h"
+#include "swapchain.h"
 
 Engine::Engine(bool debug) {
     debugMode = debug;
@@ -47,7 +48,7 @@ void Engine::make_device(){
     presentQueue = queues[1];
     vkInit::SwapChainBundle bundle = vkInit::create_swapchain(device, physicalDevice, surface, width, height, debugMode);
     swapchain = bundle.swapchain;
-    swapchainImages = bundle.images;
+    swapchainFrames = bundle.frames;
     swapchainFormat = bundle.format;
     swapchainExtent = bundle.extent;
 }
@@ -55,6 +56,10 @@ void Engine::make_device(){
 Engine::~Engine(){
     if (debugMode)
     std::cout << "destroying graphics engine" << std::endl;
+
+    for (auto& frame : swapchainFrames){
+        device.destroyImageView(frame.imageView);
+    }
 
     device.destroySwapchainKHR(swapchain);
     device.destroy();

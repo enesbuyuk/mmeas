@@ -113,4 +113,30 @@ suitable for use as a fragment shading rate attachment or shading rate image");
         if (presentMode == vk::PresentModeKHR::eFifoRelaxed) return "present mod: fifo relaxed";
         return "present mod: unknown";
     }
+
+    void log_device_properties(const vk::PhysicalDevice& device){
+        vk::PhysicalDeviceProperties properties = device.getProperties();
+        std::cout << "device name: " << properties.deviceName << "\n";
+        std::cout << "device type : ";
+        switch (properties.deviceType) {
+            case vk::PhysicalDeviceType::eOther:
+                std::cout << "other\n";
+                break;
+            case vk::PhysicalDeviceType::eIntegratedGpu:
+                std::cout << "integrated gpu\n";
+                break;
+            case vk::PhysicalDeviceType::eDiscreteGpu:
+                std::cout << "discrete gpu\n";
+                break;
+            case vk::PhysicalDeviceType::eVirtualGpu:
+                std::cout << "virtual gpu\n";
+                break;
+            case vk::PhysicalDeviceType::eCpu:
+                std::cout << "cpu\n";
+                break;
+            default:
+                std::cout << "other\n";
+        }
+    }
+
 };

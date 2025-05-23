@@ -21,6 +21,9 @@ add_executable(mmeas src/main.cpp
         src/instance.h
         src/config.h
         src/logging.h
-        src/device.h)
+        src/device.h
+        src/swapchain.h
+        src/QueueFamilies.h
+        src/frame.h)
 
 target_link_libraries(mmeas glfw ${Vulkan_LIBRARIES})
