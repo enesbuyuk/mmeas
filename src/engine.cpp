@@ -2,7 +2,7 @@
 #include "instance.h"
 #include "logging.h"
 #include "device.h"
-#include "swapchain.h"
+#include "vkUtil/Swapchain.h"
 
 Engine::Engine(bool debug) {
     debugMode = debug;

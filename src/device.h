@@ -1,6 +1,6 @@
 #pragma once
 #include "config.h"
-#include "QueueFamilies.h"
+#include "vkUtil/QueueFamilies.h"
 
 namespace vkInit {
     bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device, const std::vector<const char*>& requestedExtensions, bool debug){

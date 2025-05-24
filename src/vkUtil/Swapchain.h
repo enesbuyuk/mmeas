@@ -1,8 +1,8 @@
 #pragma once
-#include "config.h"
-#include "logging.h"
+#include "../config.h"
+#include "../logging.h"
 #include "QueueFamilies.h"
-#include "frame.h"
+#include "SwapChainFrame.h"
 
 namespace vkInit {
     struct SwapChainSupportDetails{

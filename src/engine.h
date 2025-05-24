@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.hpp>
 #include "config.h"
-#include "frame.h"
+#include "vkUtil/SwapChainFrame.h"
 
 class Instance;
 
