@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace vkInit {
-    VKAPI_ATTR VkBool32 VKAPI_CALL debugCallBack(
+    VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallBack(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
             VkDebugUtilsMessageTypeFlagsEXT messageType,
             const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
@@ -14,7 +14,7 @@ namespace vkInit {
         return VK_FALSE;
     }
 
-    vk::DebugUtilsMessengerEXT make_debug_messenger(vk::Instance &instance, vk::detail::DispatchLoaderDynamic &dldi) {
+    vk::DebugUtilsMessengerEXT MakeDebugMessenger(vk::Instance &instance, vk::detail::DispatchLoaderDynamic &dldi) {
         vk::DebugUtilsMessengerCreateInfoEXT createInfo = vk::DebugUtilsMessengerCreateInfoEXT(
                 vk::DebugUtilsMessengerCreateFlagsEXT(),
                 // vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
@@ -23,7 +23,7 @@ namespace vkInit {
                 vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
                 vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
                 vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance,
-                debugCallBack,
+                DebugCallBack,
                 nullptr
         );
 
@@ -49,7 +49,7 @@ namespace vkInit {
         return result;
     }
 
-    std::vector<std::string> log_alpha_composite_bits(vk::CompositeAlphaFlagsKHR bits) {
+    std::vector<std::string> LogAlphaCompositeBits(vk::CompositeAlphaFlagsKHR bits) {
         std::vector<std::string> result;
         if (bits & vk::CompositeAlphaFlagBitsKHR::eOpaque) result.emplace_back("opaque (alpha ignored)");
         if (bits & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied) result.emplace_back("pre multiplied (alpha expected to already be multiplied in image)");
@@ -59,7 +59,7 @@ namespace vkInit {
         return result;
     }
 
-    std::vector<std::string> log_image_usage_bits(vk::ImageUsageFlags bits){
+    std::vector<std::string> LogImageUsageBits(vk::ImageUsageFlags bits){
         std::vector<std::string> result;
         if (bits & vk::ImageUsageFlagBits::eTransferSrc) {
             result.emplace_back("transfer src: image can be used as the source of a transfer command.");
@@ -106,7 +106,7 @@ suitable for use as a fragment shading rate attachment or shading rate image");
         return result;
     }
 
-    std::string log_present_mode(vk::PresentModeKHR presentMode){
+    std::string LogPresentMode(vk::PresentModeKHR presentMode){
         if(presentMode == vk::PresentModeKHR::eImmediate) return "present mod: immediate";
         if (presentMode == vk::PresentModeKHR::eMailbox) return "present mod: mailbox";
         if (presentMode == vk::PresentModeKHR::eFifo) return "present mod: fifo";
@@ -114,7 +114,7 @@ suitable for use as a fragment shading rate attachment or shading rate image");
         return "present mod: unknown";
     }
 
-    void log_device_properties(const vk::PhysicalDevice& device){
+    void LogDeviceProperties(const vk::PhysicalDevice& device){
         vk::PhysicalDeviceProperties properties = device.getProperties();
         std::cout << "device name: " << properties.deviceName << "\n";
         std::cout << "device type : ";

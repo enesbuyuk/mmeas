@@ -3,11 +3,7 @@
 #include "QueueFamilies.h"
 
 namespace vkInit {
-    bool checkDeviceExtensionSupport(
-            const vk::PhysicalDevice& device,
-            const std::vector<const char*>& requestedExtensions,
-            bool debug
-            ){
+    bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device, const std::vector<const char*>& requestedExtensions, bool debug){
         std::set<std::string> requiredExtensions(requestedExtensions.begin(), requestedExtensions.end());
 
         if (debug) std::cout << "device can support extensions:" << "\n";
@@ -17,7 +13,8 @@ namespace vkInit {
         }
         return requiredExtensions.empty();
     }
-    bool isSuitable(const vk::PhysicalDevice& device, const bool debug) {
+
+    bool IsSuitable(const vk::PhysicalDevice& device, const bool debug) {
         if (debug) std::cout << "checking if device is suitable" << "\n";
 
         const std::vector<const char *> requestedExtensions = {
@@ -29,7 +26,7 @@ namespace vkInit {
             for (const char *ext: requestedExtensions) std::cout << "\t\"" << ext << "\"\n";
         }
 
-        if (bool extensionSupported = checkDeviceExtensionSupport(device, requestedExtensions, debug)){
+        if (bool extensionSupported = CheckDeviceExtensionSupport(device, requestedExtensions, debug)){
             if (debug) std::cout << "device supports all requested extensions" << "\n";
         } else {
             if (debug) std::cerr << "device does not support all requested extensions" << "\n";
@@ -37,7 +34,8 @@ namespace vkInit {
         }
         return true;
     }
-    vk::PhysicalDevice choose_physical_device(vk::Instance& instance, bool debug){
+
+    vk::PhysicalDevice ChoosePhysicalDevice(vk::Instance& instance, bool debug){
         if (debug) std::cout<< "choosing physical device" << "\n";
 
         std::vector<vk::PhysicalDevice> devices = instance.enumeratePhysicalDevices();
@@ -46,16 +44,15 @@ namespace vkInit {
 
         for (vk::PhysicalDevice device : devices){
             //std::cout << "device name: " << device.getProperties().deviceName << "\n";
-            if (debug) log_device_properties(device);
-            if (isSuitable(device, debug)) return device;
+            if (debug) LogDeviceProperties(device);
+            if (IsSuitable(device, debug)) return device;
         }
 
         return nullptr;
     }
 
-
-    vk::Device create_logical_device(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, bool debug){
-        vkUtil::QueueFamilyIndices indices = vkUtil::findQueueFamilies(physicalDevice, surface, debug);
+    vk::Device CreateLogicalDevice(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, bool debug){
+        vkUtil::QueueFamilyIndices indices = vkUtil::FindQueueFamilies(physicalDevice, surface, debug);
         std::vector<uint32_t> uniqueIndices = {indices.graphicsFamily.value()};
         if (indices.graphicsFamily.value() != indices.presentFamily.value()){
             uniqueIndices.push_back(indices.presentFamily.value());
@@ -95,8 +92,8 @@ namespace vkInit {
         return nullptr;
     }
 
-    std::array<vk::Queue,2> get_queue(vk::PhysicalDevice physicalDevice, vk::Device device, vk::SurfaceKHR surface, bool debug){
-        vkUtil::QueueFamilyIndices indices = vkUtil::findQueueFamilies(physicalDevice, surface, debug);
+    std::array<vk::Queue,2> GetQueue(vk::PhysicalDevice physicalDevice, vk::Device device, vk::SurfaceKHR surface, bool debug){
+        vkUtil::QueueFamilyIndices indices = vkUtil::FindQueueFamilies(physicalDevice, surface, debug);
 
         return { {
                 device.getQueue(indices.graphicsFamily.value(), 0),
@@ -105,4 +102,3 @@ namespace vkInit {
         };
     }
 }
-

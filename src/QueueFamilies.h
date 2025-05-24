@@ -8,10 +8,10 @@ namespace vkUtil {
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentFamily;
 
-        bool isComplete() { return graphicsFamily.has_value() && presentFamily.has_value(); }
+        bool IsComplete() const { return graphicsFamily.has_value() && presentFamily.has_value(); }
     };
 
-    QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, vk::SurfaceKHR surface, bool debug) {
+    QueueFamilyIndices FindQueueFamilies(vk::PhysicalDevice device, vk::SurfaceKHR surface, bool debug) {
         QueueFamilyIndices indices;
 
         std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
@@ -33,7 +33,7 @@ namespace vkUtil {
                 if (debug) std::cout << "queue family " << i << " is suitable for presenting.\n";
             }
 
-            if (indices.isComplete()) break;
+            if (indices.IsComplete()) break;
             i++;
         }
 

@@ -7,12 +7,12 @@
 Engine::Engine(bool debug) {
     debugMode = debug;
     if (debugMode) std::cout << "making a graphics engine" << std::endl;
-    build_glfw_window();
-    make_instance();
-    make_device();
+    BuildGlfwWindow();
+    MakeInstance();
+    MakeDevice();
 }
 
-void Engine::build_glfw_window() {
+void Engine::BuildGlfwWindow() {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -27,10 +27,10 @@ void Engine::build_glfw_window() {
 
 }
 
-void Engine::make_instance(){
-    instance = vkInit::make_instance(debugMode, "MMEAS");
+void Engine::MakeInstance(){
+    instance = vkInit::MakeInstance(debugMode, "MMEAS");
     dldi = vk::detail::DispatchLoaderDynamic(instance, vkGetInstanceProcAddr);
-    if (debugMode) debugMessenger = vkInit::make_debug_messenger(instance, dldi);
+    if (debugMode) debugMessenger = vkInit::MakeDebugMessenger(instance, dldi);
     VkSurfaceKHR c_style_surface;
     if (glfwCreateWindowSurface(instance, window, nullptr, &c_style_surface) != VK_SUCCESS){
         if (debugMode) std::cerr << "failed to abstract the glfw surface for vulkan\n";
@@ -40,13 +40,13 @@ void Engine::make_instance(){
     surface = c_style_surface;
 }
 
-void Engine::make_device(){
-    physicalDevice = vkInit::choose_physical_device(instance, debugMode);
-    device = vkInit::create_logical_device(physicalDevice, surface, debugMode);
-    std::array<vk::Queue,2> queues = vkInit::get_queue(physicalDevice, device, surface, debugMode);
+void Engine::MakeDevice(){
+    physicalDevice = vkInit::ChoosePhysicalDevice(instance, debugMode);
+    device = vkInit::CreateLogicalDevice(physicalDevice, surface, debugMode);
+    std::array<vk::Queue,2> queues = vkInit::GetQueue(physicalDevice, device, surface, debugMode);
     graphicsQueue = queues[0];
     presentQueue = queues[1];
-    vkInit::SwapChainBundle bundle = vkInit::create_swapchain(device, physicalDevice, surface, width, height, debugMode);
+    vkInit::SwapChainBundle bundle = vkInit::CreateSwapchain(device, physicalDevice, surface, width, height, debugMode);
     swapchain = bundle.swapchain;
     swapchainFrames = bundle.frames;
     swapchainFormat = bundle.format;

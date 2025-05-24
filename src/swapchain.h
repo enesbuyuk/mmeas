@@ -10,7 +10,7 @@ namespace vkInit {
         std::vector<vk::SurfaceFormatKHR> formats;
         std::vector<vk::PresentModeKHR> presentModes;
 
-        bool isComplete() {return !formats.empty() && !presentModes.empty();}
+        bool IsComplete() {return !formats.empty() && !presentModes.empty();}
     };
 
     struct SwapChainBundle{
@@ -18,11 +18,9 @@ namespace vkInit {
         std::vector<vkUtil::SwapChainFrame> frames;
         vk::Format format;
         vk::Extent2D extent;
-
     };
 
-
-    SwapChainSupportDetails query_swapchain_support(vk::PhysicalDevice device, vk::SurfaceKHR surface, bool debug){
+    SwapChainSupportDetails QuerySwapchainSupport(vk::PhysicalDevice device, vk::SurfaceKHR surface, bool debug){
         SwapChainSupportDetails support;
         support.capabilities = device.getSurfaceCapabilitiesKHR(surface);
         if (debug){
@@ -55,11 +53,11 @@ namespace vkInit {
             for (const auto& str: stringList) std::cout << "\t\t" << str << "\n";
 
             std::cout << "\tsupported alpha operations: \n";
-            stringList = log_alpha_composite_bits(support.capabilities.supportedCompositeAlpha);
+            stringList = LogAlphaCompositeBits(support.capabilities.supportedCompositeAlpha);
             for (const auto& str: stringList) std::cout << "\t\t" << str << "\n";
 
             std::cout << "\tsupported image usage: \n";
-            stringList = log_image_usage_bits(support.capabilities.supportedUsageFlags);
+            stringList = LogImageUsageBits(support.capabilities.supportedUsageFlags);
             for (const auto& str: stringList) std::cout << "\t\t" << str << "\n";
 
         }
@@ -75,14 +73,14 @@ namespace vkInit {
         support.presentModes = device.getSurfacePresentModesKHR(surface);
         if(debug){
             for (const auto& presentMode : support.presentModes) {
-                std::cout << "\tsupported present mode: " << log_present_mode(presentMode) << "\n";
+                std::cout << "\tsupported present mode: " << LogPresentMode(presentMode) << "\n";
             }
         }
 
         return support;
     }
 
-    vk::SurfaceFormatKHR choose_swapchain_surface_format(std::vector<vk::SurfaceFormatKHR> formats){
+    vk::SurfaceFormatKHR ChooseSwapchainSurfaceFormat(std::vector<vk::SurfaceFormatKHR> formats){
         for(const auto& format : formats){
             if(format.format == vk::Format::eB8G8R8A8Srgb && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear){
                 return format;
@@ -91,7 +89,7 @@ namespace vkInit {
         return formats[0];
     }
 
-    vk::PresentModeKHR choose_swapchain_present_mode(std::vector<vk::PresentModeKHR> presentModes){
+    vk::PresentModeKHR ChooseSwapchainPresentMode(std::vector<vk::PresentModeKHR> presentModes){
         for (const auto& presentMode : presentModes){
             if (presentMode == vk::PresentModeKHR::eMailbox){
                 return presentMode;
@@ -100,7 +98,7 @@ namespace vkInit {
         return vk::PresentModeKHR::eFifo;
     }
 
-    vk::Extent2D choose_swapchain_extent(uint32_t width, uint32_t height, vk::SurfaceCapabilitiesKHR capabilities){
+    vk::Extent2D ChooseSwapchainExtent(uint32_t width, uint32_t height, vk::SurfaceCapabilitiesKHR capabilities){
         if(capabilities.currentExtent.width != UINT32_MAX){
             return capabilities.currentExtent;
         }else{
@@ -117,11 +115,11 @@ namespace vkInit {
         }
     }
 
-    SwapChainBundle create_swapchain(vk::Device logicalDevice, vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, int width, int height, bool debug){
-        SwapChainSupportDetails support = query_swapchain_support(physicalDevice, surface, debug);
-        vk::SurfaceFormatKHR format = choose_swapchain_surface_format(support.formats);
-        vk::PresentModeKHR presentMode = choose_swapchain_present_mode(support.presentModes);
-        vk::Extent2D extent = choose_swapchain_extent(width, height, support.capabilities);
+    SwapChainBundle CreateSwapchain(vk::Device logicalDevice, vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, int width, int height, bool debug){
+        SwapChainSupportDetails support = QuerySwapchainSupport(physicalDevice, surface, debug);
+        vk::SurfaceFormatKHR format = ChooseSwapchainSurfaceFormat(support.formats);
+        vk::PresentModeKHR presentMode = ChooseSwapchainPresentMode(support.presentModes);
+        vk::Extent2D extent = ChooseSwapchainExtent(width, height, support.capabilities);
         uint32_t imageCount = std::min(
                 support.capabilities.maxImageCount,
                 support.capabilities.minImageCount + 1
@@ -131,7 +129,7 @@ namespace vkInit {
                 surface, imageCount, format.format, format.colorSpace,
                 extent, 1 , vk::ImageUsageFlagBits::eColorAttachment
         );
-        vkUtil::QueueFamilyIndices indices = vkUtil::findQueueFamilies(physicalDevice, surface, debug);
+        vkUtil::QueueFamilyIndices indices = vkUtil::FindQueueFamilies(physicalDevice, surface, debug);
         uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
 
         if (indices.graphicsFamily.value() != indices.presentFamily.value()){
@@ -184,5 +182,4 @@ namespace vkInit {
         return bundle;
 
     }
-
 }

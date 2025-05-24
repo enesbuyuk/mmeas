@@ -34,10 +34,10 @@ private:
     vk::Format swapchainFormat;
     vk::Extent2D swapchainExtent;
 
-    void build_glfw_window();
+    void BuildGlfwWindow();
 
-    void make_instance();
+    void MakeInstance();
 
 
-    void make_device();
+    void MakeDevice();
 };

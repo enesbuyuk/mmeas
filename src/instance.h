@@ -66,7 +66,7 @@ namespace vkInit{
         return true;
     }
 
-    vk::Instance make_instance(bool debug, const char* appName){
+    vk::Instance MakeInstance(bool debug, const char* appName){
         if (debug) std::cout << "making an instance" << std::endl;
 
         uint32_t version{0};
